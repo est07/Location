@@ -38,6 +38,7 @@ public class DetectedActivitiesIntentService extends IntentService {
                 " - Confianza " + detectedActivity.getConfidence());
 
         int type = detectedActivity.getType();
+        int probability = detectedActivity.getConfidence();
 
         if (DetectedActivity.ON_FOOT == type) {
             type = walkingOrRunning(result.getProbableActivities());
@@ -49,6 +50,7 @@ public class DetectedActivitiesIntentService extends IntentService {
 
         // El siguiente paso, es poner las actividades en el intent
         localIntent.putExtra(Constants.ACTIVITY_KEY, type);
+        localIntent.putExtra(Constants.PROBABILITY, probability);
 
         // Y finalmente envía los datos hacia la actividad
         LocalBroadcastManager.getInstance(this).sendBroadcast(localIntent);

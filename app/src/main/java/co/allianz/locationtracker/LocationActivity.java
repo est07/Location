@@ -1,6 +1,7 @@
 package co.allianz.locationtracker;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -46,6 +47,7 @@ public class LocationActivity extends AppCompatActivity implements
 
     private static final String LOCATION_KEY = "location-key";
     private static final String ACTIVITY_KEY = "activity-key";
+    private static final String POBABILITY_KEY = "probability-key";
 
     // Location API
     private GoogleApiClient googleApiClient;
@@ -58,10 +60,12 @@ public class LocationActivity extends AppCompatActivity implements
     @DrawableRes
     private int imageResource = R.drawable.ic_question;
 
+    private int activityProbility;
     // UI
     private TextView latitude;
     private TextView longitude;
     private TextView altitude;
+    private TextView probability;
     private ImageView dectectedActivityIcon;
 
     // Códigos de petición
@@ -80,6 +84,7 @@ public class LocationActivity extends AppCompatActivity implements
         latitude = (TextView) findViewById(R.id.tv_latitude);
         longitude = (TextView) findViewById(R.id.tv_longitude);
         altitude = (TextView) findViewById(R.id.tv_alatitude);
+        probability = (TextView) findViewById(R.id.tv_probability);
         dectectedActivityIcon = (ImageView) findViewById(R.id.iv_activity_icon);
 
         // Establecer punto de entrada para la API de ubicación
@@ -129,6 +134,7 @@ public class LocationActivity extends AppCompatActivity implements
         // Protegemos la ubicación actual antes del cambio de configuración
         outState.putParcelable(LOCATION_KEY, mLastLocation);
         outState.putInt(ACTIVITY_KEY, imageResource);
+        outState.putInt(POBABILITY_KEY,activityProbility);
         super.onSaveInstanceState(outState);
     }
 
@@ -239,17 +245,23 @@ public class LocationActivity extends AppCompatActivity implements
 
                 updateRecognitionUI();
             }
+            if (savedInstanceState.containsKey(POBABILITY_KEY)){
+                activityProbility = savedInstanceState.getInt(POBABILITY_KEY);
+
+            }
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private void updateLocationUI() {
         latitude.setText(String.valueOf(mLastLocation.getLatitude()));
         longitude.setText(String.valueOf(mLastLocation.getLongitude()));
-        altitude.setText(String.valueOf(mLastLocation.getAltitude()));
+        altitude.setText(String.format(Constants.FORMAT_DOUBLE,mLastLocation.getAltitude()));
         }
 
     private void updateRecognitionUI() {
         dectectedActivityIcon.setImageResource(imageResource);
+        probability.setText(String.format(Constants.PROBABILITY_FORMAT,activityProbility));
     }
 
     private void stopActivityUpdates() {
@@ -378,8 +390,10 @@ public class LocationActivity extends AppCompatActivity implements
             @Override
             public void onReceive(Context context, Intent intent) {
                 int type = intent.getIntExtra(Constants.ACTIVITY_KEY, -1);
+                int probability = intent.getIntExtra(Constants.PROBABILITY, 0);
 
                 imageResource = Constants.getActivityIcon(type);
+                activityProbility = probability;
                 updateRecognitionUI();
             }
 

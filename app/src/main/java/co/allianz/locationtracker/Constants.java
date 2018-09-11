@@ -5,6 +5,10 @@ import com.google.android.gms.location.DetectedActivity;
 public class Constants {
 
     public static final String BROADCAST_ACTION = "broadcast-action";
+    public static final String PROBABILITY = "probability";
+    public static final String PROBABILITY_FORMAT = "%s %%";
+
+    public static final String FORMAT_DOUBLE = "%.3f";
     public static final String ACTIVITY_KEY = "activites-key";
     public static final long ACTIVITY_RECOGNITION_INTERVAL = 0;
     public static final long UPDATE_INTERVAL = 5000;
