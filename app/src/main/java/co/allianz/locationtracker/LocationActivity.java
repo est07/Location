@@ -256,7 +256,7 @@ public class LocationActivity extends AppCompatActivity implements
     private void updateLocationUI() {
         latitude.setText(String.valueOf(mLastLocation.getLatitude()));
         longitude.setText(String.valueOf(mLastLocation.getLongitude()));
-        altitude.setText(String.format(Constants.FORMAT_DOUBLE,mLastLocation.getAltitude()));
+        altitude.setText(String.valueOf(mLastLocation.getAltitude()));
         }
 
     private void updateRecognitionUI() {
